@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 
 [System.Serializable]
 public class TerrainType {
@@ -29,7 +28,9 @@ public class Grid : MonoBehaviour {
     public Vector2 gridWorldSize;
     public float nodeRadius;
     public float nodeDiameter { get { return nodeRadius * 2; } }
-    private Node[,] grid;    
+    //private Node[,] grid;
+    public MultiNodeArray grid;
+
     private int gridSizeX, gridSizeY;
 
     [Space(10)]
@@ -90,8 +91,13 @@ public class Grid : MonoBehaviour {
     public void CreateGrid() {
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
-
-        grid = new Node[gridSizeX, gridSizeY];
+        if (grid != null && grid.values != null && grid.Width == gridSizeX && grid.Height == gridSizeY)
+        {
+            return;
+        }
+        print("New grid created!");
+        grid = new MultiNodeArray(gridSizeX, gridSizeY);
+        print(grid.Width);
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.up * gridWorldSize.y / 2;
         for (int x = 0; x < gridSizeX; x++) {
             for (int y = 0; y < gridSizeY; y++) {
@@ -270,12 +276,9 @@ public class Grid : MonoBehaviour {
 
             if (grid != null)
             {
-                foreach (Node n in grid)
+                foreach (Node n in grid.values)
                 {
-                    Gizmos.color = (n.walkable) ? Color.white : Color.red;
-                    //if (path != null)
-                    //    if (path.Contains(n))
-                    //        Gizmos.color = Color.black;
+                    Gizmos.color = (n.walkable) ? new Color(255, 255, 255, 0.4f) : new Color(255, 0, 0, 0.4f);
                     Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
                 }
 
@@ -318,19 +321,8 @@ public class Grid : MonoBehaviour {
 
 }
 
-//[CustomEditor(typeof(Grid))]
-//public class ObjectBuilderEditor : Editor
-//{
 
-//    public override void OnInspectorGUI()
-//    {
-//        DrawDefaultInspector();
-//        Grid myScript = (Grid)target;
-//        if (GUILayout.Button("Create grid"))
-//        {
-//            myScript.CreateGrid();
-//            EditorUtility.SetDirty(myScript);
-//        }
-//    }
-//}
+
+
+
 
