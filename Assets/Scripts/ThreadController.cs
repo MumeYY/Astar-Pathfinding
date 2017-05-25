@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Threading;
 using System;
 using System.Diagnostics;
+using Pathfinding;
 
 public class ThreadController : MonoBehaviour {
 

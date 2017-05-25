@@ -44,9 +44,11 @@ public class Grid : MonoBehaviour {
     [Space(10)]
     [Header("Advanced")]
     public bool showGrid;
+    public bool allowDiagonal;
     public bool cutCorners;
     public bool useThreading;
     public bool showPathSearchDebug;
+    
 
 
     //This is for showing calculated path. This can be used to debug paths. Can be removed.
@@ -97,7 +99,6 @@ public class Grid : MonoBehaviour {
         }
         print("New grid created!");
         grid = new MultiNodeArray(gridSizeX, gridSizeY);
-        print(grid.Width);
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.up * gridWorldSize.y / 2;
         for (int x = 0; x < gridSizeX; x++) {
             for (int y = 0; y < gridSizeY; y++) {
@@ -132,6 +133,12 @@ public class Grid : MonoBehaviour {
 
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
+
+                if(allowDiagonal == false && Mathf.Abs(x)+Mathf.Abs(y) == 2)
+                {
+
+                    continue;
+                }
 
                 //Skip center node, because it is current node
                 if (x == 0 && y == 0)
@@ -274,7 +281,7 @@ public class Grid : MonoBehaviour {
 
         if (showGrid) { 
 
-            if (grid != null)
+            if (grid.values != null)
             {
                 foreach (Node n in grid.values)
                 {
